@@ -38,6 +38,8 @@ public class MultiObjectiveHammingBallHillClimberExperiment implements Process {
     private static final String PROBLEM="problem";
     private static final String MNK_PROBLEM = "mnk";
     private static final String MQUBO = "mqubo";
+    private static final String TEST_SUITE_MINIMIZATION = "tsm";
+    private static final String PLAIN_OUTPUT_ARGUMENT = "po";
 
 	private PrintStream ps;
 	private ByteArrayOutputStream ba;
@@ -46,6 +48,7 @@ public class MultiObjectiveHammingBallHillClimberExperiment implements Process {
 	private Random random;
 
     private Options options;
+    private boolean plainOutput;
     
     ParetoNonDominatedSet nonDominatedSet;
     private int totalMoves;
@@ -58,6 +61,7 @@ public class MultiObjectiveHammingBallHillClimberExperiment implements Process {
     {
         configurators.put(MNK_PROBLEM, new MNKLandscapeConfigurator());
         configurators.put(MQUBO, new MquboConfigurator());
+        configurators.put(TEST_SUITE_MINIMIZATION, new MOTestSuiteMinimizationConfiguration());
     }
 
     
@@ -116,8 +120,9 @@ public class MultiObjectiveHammingBallHillClimberExperiment implements Process {
             .argName("property=value")
             .desc("properties for the problem")
             .build());
-	    
-	    return options;
+	    options.addOption(PLAIN_OUTPUT_ARGUMENT, false, "print plain-text output instead of gzip-compressed byte");
+
+        return options;
 	}
 
 	@Override
@@ -136,6 +141,7 @@ public class MultiObjectiveHammingBallHillClimberExperiment implements Process {
             timer.startTimer();
 
             problem = commandLine.getOptionValue(PROBLEM);
+            plainOutput = commandLine.hasOption(PLAIN_OUTPUT_ARGUMENT);
 
             initializeDataHolders();
             initializeOutput();
@@ -222,6 +228,10 @@ public class MultiObjectiveHammingBallHillClimberExperiment implements Process {
 
     private void initializeOutput() {
         ba = new ByteArrayOutputStream();
+        if(plainOutput){
+            ps = new PrintStream(ba);
+            return;
+        }
         try {
             ps = new PrintStream(new GZIPOutputStream(ba));
         } catch (IOException e) {
