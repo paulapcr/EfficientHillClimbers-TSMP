@@ -7,25 +7,45 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Properties;
 
+/**
+ * Objective function for test-suite minimization that rewards low execution cost.
+ *
+ * <p>The framework maximizes objective values. To model cost minimization,
+ * this objective returns negative values: selecting a test with cost {@code c}
+ * contributes {@code -c}. As a consequence, maximizing this objective is
+ * equivalent to minimizing total cost.</p>
+ */
 public class TestingCost extends EmbeddedLandscape {
 
+    // Number of tests in the test suite.
     public static final String TEST_PROPERTY = "tests";
+    // Cost list for all tests.
     public static final String COSTS_PROPERTY = "costs";
 
     private static final String COST_SEPARATOR_REGEX = "\\s*,\\s*|\\s+";
     private double [] costs;
 
+    /**
+     * Evaluates one subfunction (one test) from a subsolution of length 1.
+     */
     @Override
     public double evaluateSubfunction(int sf, PBSolution pbs) {
         return -costs[sf] * (pbs.getBit(0));
     }
 
+
+    /**
+     * Same as {@link #evaluateSubfunction(int, PBSolution)} but using the binary value directly.
+     */
     @Override
     public double evaluateSubfunction(int sf, int value) {
         return -costs[sf] * (value == 0 ? 0 : 1);
     }
 
 
+    /**
+     * Serializes the objective configuration using standard properties format.
+     */
     @Override
     public void writeInstance(Writer writer) {
         try{
@@ -44,6 +64,14 @@ public class TestingCost extends EmbeddedLandscape {
 
     }
 
+    /**
+     * Loads objective configuration from properties.
+     *
+     * <ul>
+     *   <li>{@code tests}: number of tests.</li>
+     *   <li>{@code costs}: list of test costs (comma/space separated) with exact size {@code tests}.</li>
+     * </ul>
+     */
     @Override
     public void setConfiguration(Properties prop) {
         /* TODO: read costs
@@ -79,6 +107,7 @@ public class TestingCost extends EmbeddedLandscape {
             costs[i] = Double.parseDouble(tokens[i]);
         }
 
+        // One subfunction per test. Each subfunction depends on a single variable (that test selection bit).
         masks = new int[m][];
         for(int i = 0; i < m; i++){
             masks[i] = new int[] { i };

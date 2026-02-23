@@ -1,10 +1,6 @@
 package neo.landscape.theory.apps.pseudoboolean.experiments.mo;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -40,6 +36,7 @@ public class MultiObjectiveHammingBallHillClimberExperiment implements Process {
     private static final String MQUBO = "mqubo";
     private static final String TEST_SUITE_MINIMIZATION = "tsm";
     private static final String PLAIN_OUTPUT_ARGUMENT = "po";
+    private static final String INSTANCE_ARGUMENT = "instance";
 
 	private PrintStream ps;
 	private ByteArrayOutputStream ba;
@@ -121,7 +118,7 @@ public class MultiObjectiveHammingBallHillClimberExperiment implements Process {
             .desc("properties for the problem")
             .build());
 	    options.addOption(PLAIN_OUTPUT_ARGUMENT, false, "print plain-text output instead of gzip-compressed byte");
-
+        options.addOption(INSTANCE_ARGUMENT, true, "path to a .properties file with problem configuration");
         return options;
 	}
 
@@ -147,7 +144,7 @@ public class MultiObjectiveHammingBallHillClimberExperiment implements Process {
             initializeOutput();
 
             VectorMKLandscape pbf = getProblemConfigurator().configureProblem(
-                commandLine.getOptionProperties(PROBLEM_CHAR), ps);
+                getProblemProperties(commandLine), ps);
 
             int r = Integer.parseInt(commandLine.getOptionValue(RADIUS_ARGUMENT));
             int time = Integer.parseInt(commandLine.getOptionValue(TIME_ARGUMENT));
@@ -197,8 +194,33 @@ public class MultiObjectiveHammingBallHillClimberExperiment implements Process {
             printOutput();
         } catch (Exception e) {
             showOptions();
+            System.err.println("Error: "+ e.getMessage());
+            if(e.getCause()!=null){
+                System.err.println("Caused by: " + e.getCause().getMessage());
+            }
         }
     }
+
+    private Properties getProblemProperties(CommandLine commandLine) {
+        Properties properties = new Properties();
+
+        if (commandLine.hasOption(INSTANCE_ARGUMENT)) {
+            String instancePath = commandLine.getOptionValue(INSTANCE_ARGUMENT);
+            try (FileInputStream fis = new FileInputStream(instancePath)) {
+                properties.load(fis);
+            } catch (IOException e) {
+                throw new RuntimeException("Cannot load properties file: " + instancePath, e);
+            }
+        }
+
+        Properties commandLineProperties = commandLine.getOptionProperties(PROBLEM_CHAR);
+        for (String propertyName : commandLineProperties.stringPropertyNames()) {
+            properties.setProperty(propertyName, commandLineProperties.getProperty(propertyName));
+        }
+
+        return properties;
+    }
+
 
     private void showOptions() {
         HelpFormatter helpFormatter = new HelpFormatter();

@@ -9,31 +9,51 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * Objective function for test-suite minimization that rewards requirement coverage.
+ *
+ * <p>There is one subfunction per requirement. A requirement contributes {@code 1.0}
+ * if at least one selected test covering that requirement is active, and {@code 0.0}
+ * otherwise.</p>
+ */
 public class TestingCoverage extends EmbeddedLandscape {
 
+    // Number of tests in the suite
     public static final String TESTS_PROPERTY = "tests";
+    // Number of requirements (optional. If omitted, inferred from coverage rows).
     public static final String REQUIREMENTS_PROPERTY = "requirements";
+    // Coverage matrix encoded by rows (one row per requirement).
     public static final String COVERAGE_PROPERTY = "coverage";
+
 
     private static final String ROW_SEPARATOR_REGEX = "\\s*;\\s*|\\s*\\n\\s*";
     private static final String COLUMN_SEPARATOR_REGEX = "\\s*,\\s*|\\s+";
 
 
+    /**
+     * Evaluates one requirement from a subsolution containing only variables in that requirement mask.
+     */
      @Override
      public double evaluateSubfunction(int sf, PBSolution pbs) {
-         for (int test : masks[sf]) {
-             if (pbs.getBit(test) == 1) {
+         for(int var = 0; var < masks[sf].length; var++){
+             if(pbs.getBit(var) == 1){
                  return 1.0;
              }
          }
          return 0.0;
      }
 
+     /**
+     Shortcut evaluation for binary value used by internal incremental machinery.
+      */
     @Override
     public double evaluateSubfunction(int sf, int value) {
         return value == 0 ? 0.0 : 1.0;
     }
 
+    /**
+     * Serializes tests/requirements/coverage in properties format.
+     */
     @Override
     public void writeInstance(Writer writer) {
         // TODO
@@ -59,6 +79,16 @@ public class TestingCoverage extends EmbeddedLandscape {
         }
     }
 
+
+    /**
+     * Loads objective configuration from properties.
+     *
+     * <p>{@code coverage} supports two row formats:</p>
+     * <ul>
+     *   <li>Binary row with {@code tests} columns, e.g. {@code 0 1 0 1}.</li>
+     *   <li>Sparse row with covered test indexes, e.g. {@code 1,3}.</li>
+     * </ul>
+     */
     @Override
     public void setConfiguration(Properties prop) {
         // TODO
@@ -88,6 +118,7 @@ public class TestingCoverage extends EmbeddedLandscape {
             m = rows.length;
         }
 
+        // one subfunction per requirement. Each mask contains test indexes that cover that requirement.
         masks = new int[m][];
 
         for(int requirements = 0; requirements < m; requirements++){
@@ -97,6 +128,9 @@ public class TestingCoverage extends EmbeddedLandscape {
 
     }
 
+    /**
+     * Parses one requirement row in either binary or sparse notation.
+     */
     private int[] parseCoverageRow(String row, int numberOfTests, int requirement){
          String trimmedRow = row.trim();
          if(trimmedRow.isEmpty()){
@@ -111,6 +145,9 @@ public class TestingCoverage extends EmbeddedLandscape {
         return parseSparseRow(tokens, numberOfTests, requirement);
     }
 
+    /**
+     * Checks if a row is binary (length == numberOfTests and only 0/1 tokens).
+     */
     private boolean isBinaryRow(String[] tokens, int numberOfTests){
          if(tokens.length != numberOfTests){
              return false;
@@ -125,6 +162,9 @@ public class TestingCoverage extends EmbeddedLandscape {
          return true;
     }
 
+    /**
+     * Converts a binary row into sparse mask indexes.
+     */
     private int[] parseBinaryRow(String[] tokens){
          int coveredTests = 0;
          for (String token : tokens) {
@@ -144,6 +184,9 @@ public class TestingCoverage extends EmbeddedLandscape {
          return parsedMask;
     }
 
+    /**
+     * Parses sparse coverage row, validates bounds and removes duplicated test indexes.
+     */
     private int[] parseSparseRow(String[] tokens, int numberOfTests, int requirement){
          boolean[] alreadyAdded = new boolean[numberOfTests];
          List<Integer> testCases = new ArrayList<Integer>(tokens.length);
