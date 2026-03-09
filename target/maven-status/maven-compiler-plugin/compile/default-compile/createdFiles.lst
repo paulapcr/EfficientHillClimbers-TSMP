@@ -260,7 +260,6 @@ neo\landscape\theory\apps\pseudoboolean\problems\mo\VectorMKLandscapeWriter.clas
 neo\landscape\theory\apps\pseudoboolean\hillclimbers\mo\MultiObjectiveSelector.class
 neo\landscape\theory\apps\util\IteratorFromArray$10.class
 neo\landscape\theory\apps\pseudoboolean\hillclimbers\mo\constrained\MultiObjectiveHammingBallHillClimberStatistics.class
-neo\landscape\theory\apps\pseudoboolean\problems\mo\MOTestSuiteMinimziation.class
 neo\landscape\theory\apps\pseudoboolean\problems\mo\MquboDto$WalshCoefficientDto.class
 neo\landscape\theory\apps\pseudoboolean\px\VariableProcedence.class
 neo\landscape\theory\apps\pseudoboolean\hillclimbers\mo\constrained\MultiObjectiveConstrainedSelector.class

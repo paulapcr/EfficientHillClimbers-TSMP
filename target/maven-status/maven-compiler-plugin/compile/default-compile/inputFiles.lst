@@ -30,7 +30,6 @@ C:\Users\Paola\Documents\Trabajo\TSMP-MOL\mod_dpx-ecj\src\main\java\neo\landscap
 C:\Users\Paola\Documents\Trabajo\TSMP-MOL\mod_dpx-ecj\src\main\java\neo\landscape\theory\apps\pseudoboolean\experiments\mo\ExactMultiObjectiveExperiment.java
 C:\Users\Paola\Documents\Trabajo\TSMP-MOL\mod_dpx-ecj\src\main\java\neo\landscape\theory\apps\efficienthc\SingleobjectiveProblem.java
 C:\Users\Paola\Documents\Trabajo\TSMP-MOL\mod_dpx-ecj\src\main\java\neo\landscape\theory\apps\pseudoboolean\util\ParetoNonDominatedSet.java
-C:\Users\Paola\Documents\Trabajo\TSMP-MOL\mod_dpx-ecj\src\main\java\neo\landscape\theory\apps\pseudoboolean\problems\mo\MOTestSuiteMinimziation.java
 C:\Users\Paola\Documents\Trabajo\TSMP-MOL\mod_dpx-ecj\src\main\java\neo\landscape\theory\apps\pseudoboolean\util\graphs\UndirectedGraph.java
 C:\Users\Paola\Documents\Trabajo\TSMP-MOL\mod_dpx-ecj\src\main\java\neo\landscape\theory\apps\pseudoboolean\problems\NKLandscapes.java
 C:\Users\Paola\Documents\Trabajo\TSMP-MOL\mod_dpx-ecj\src\main\java\neo\landscape\theory\apps\pseudoboolean\hillclimbers\NoImprovingMoveException.java
@@ -81,6 +80,7 @@ C:\Users\Paola\Documents\Trabajo\TSMP-MOL\mod_dpx-ecj\src\main\java\neo\landscap
 C:\Users\Paola\Documents\Trabajo\TSMP-MOL\mod_dpx-ecj\src\main\java\neo\landscape\theory\apps\pseudoboolean\hillclimbers\mo\constrained\HillClimberListener.java
 C:\Users\Paola\Documents\Trabajo\TSMP-MOL\mod_dpx-ecj\src\main\java\neo\landscape\theory\apps\util\linkedlist\DefaultEntry.java
 C:\Users\Paola\Documents\Trabajo\TSMP-MOL\mod_dpx-ecj\src\main\java\neo\landscape\theory\apps\pseudoboolean\problems\mo\MaleoFormat.java
+C:\Users\Paola\Documents\Trabajo\TSMP-MOL\mod_dpx-ecj\src\main\java\neo\landscape\theory\apps\pseudoboolean\problems\mo\MOTestSuiteMinimization.java
 C:\Users\Paola\Documents\Trabajo\TSMP-MOL\mod_dpx-ecj\src\main\java\neo\landscape\theory\apps\util\CpuClockTimer.java
 C:\Users\Paola\Documents\Trabajo\TSMP-MOL\mod_dpx-ecj\src\main\java\neo\landscape\theory\apps\util\Adaptor.java
 C:\Users\Paola\Documents\Trabajo\TSMP-MOL\mod_dpx-ecj\src\main\java\neo\landscape\theory\apps\pseudoboolean\exactsolvers\CompleteEnumeration.java
