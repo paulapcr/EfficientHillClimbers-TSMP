@@ -326,9 +326,11 @@ public class MultiObjectiveHammingBallHillClimberExperiment implements Process {
 
         System.out.println("----- FINAL SOLUTION -----");
         System.out.println("Selected tests: " + selectedTests);
+
         System.out.println("Coverage: " + quality[0]);
         System.out.println("Cost: " + (-quality[1]));
         System.out.println("Average cost per selected test: " + ((-quality[1]) / selectedTests));
+
         System.out.println("--------------------------");
 
         // end new debugg!!
