@@ -160,6 +160,9 @@ public class MultiObjectiveHammingBallHillClimberExperiment implements Process {
             VectorMKLandscape pbf = getProblemConfigurator().configureProblem(
                     getProblemProperties(commandLine), ps);
 
+            System.out.println("Variables: " + pbf.getN());
+            System.out.println("Subfunctions: " + pbf.getM());
+
             int r = Integer.parseInt(commandLine.getOptionValue(RADIUS_ARGUMENT));
             int time = Integer.parseInt(commandLine.getOptionValue(TIME_ARGUMENT));
 
@@ -183,8 +186,8 @@ public class MultiObjectiveHammingBallHillClimberExperiment implements Process {
             rballConfig.setProperty(RBallEfficientHillClimber.R_STRING, r + "");
             rballConfig.setProperty(RBallEfficientHillClimber.SEED, "" + seed);
 
-            MultiObjectiveHammingBallHillClimberForInstanceOf rballfio
-                    = (MultiObjectiveHammingBallHillClimberForInstanceOf) new MultiObjectiveHammingBallHillClimber(rballConfig).initialize(pbf);
+            MultiObjectiveHammingBallHillClimberForInstanceOf rballfio = (MultiObjectiveHammingBallHillClimberForInstanceOf) new MultiObjectiveHammingBallHillClimber(
+                    rballConfig).initialize(pbf);
 
             ps.println("Search starts: " + timer.elapsedTimeInMilliseconds());
 
@@ -220,8 +223,7 @@ public class MultiObjectiveHammingBallHillClimberExperiment implements Process {
         if (commandLine.hasOption(INSTANCE_ARGUMENT)) {
             properties.setProperty(
                     INSTANCE_ARGUMENT,
-                    commandLine.getOptionValue(INSTANCE_ARGUMENT)
-            );
+                    commandLine.getOptionValue(INSTANCE_ARGUMENT));
         }
 
         Properties commandLineProperties = commandLine.getOptionProperties(PROBLEM_CHAR);
@@ -299,14 +301,38 @@ public class MultiObjectiveHammingBallHillClimberExperiment implements Process {
                 VectorPBMove move = rball.getMovement();
                 KindOfMove kind = selector.classifyMove(move);
                 if (KindOfMove.W_IMPROVING.equals(kind)) {
+
                     nonDominatedSet.addPoint(rball.getSolutionQuality());
                 }
                 rball.move();
-                //rball.checkConsistency();
+                // rball.checkConsistency();
                 moves++;
             } while (!timer.shouldStop());
         } catch (NoImprovingMoveException e) {
         }
+
+        // newww debug
+        PBSolution sol = rball.getSolution();
+
+        int selectedTests = 0;
+
+        for (int i = 0; i < sol.getN(); i++) {
+            if (sol.getBit(i) == 1) {
+                selectedTests++;
+            }
+        }
+
+        double[] quality = rball.getSolutionQuality();
+
+        System.out.println("----- FINAL SOLUTION -----");
+        System.out.println("Selected tests: " + selectedTests);
+        System.out.println("Coverage: " + quality[0]);
+        System.out.println("Cost: " + (-quality[1]));
+        System.out.println("Average cost per selected test: " + ((-quality[1]) / selectedTests));
+        System.out.println("--------------------------");
+
+        // end new debugg!!
+
         nonDominatedSet.addPoint(rball.getSolutionQuality());
         return moves;
     }

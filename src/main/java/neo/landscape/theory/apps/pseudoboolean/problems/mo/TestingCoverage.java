@@ -15,8 +15,11 @@ import java.util.Properties;
  *
  * <p>
  * There is one subfunction per requirement. A requirement contributes
- * {@code 1.0} if at least one selected test covering that requirement is
- * active, and {@code 0.0} otherwise.</p>
+ * {@code 1.0}
+ * if at least one selected test covering that requirement is active, and
+ * {@code 0.0}
+ * otherwise.
+ * </p>
  */
 public class TestingCoverage extends EmbeddedLandscape {
 
@@ -45,8 +48,7 @@ public class TestingCoverage extends EmbeddedLandscape {
     }
 
     /**
-     * Shortcut evaluation for binary value used by internal incremental
-     * machinery.
+     * Shortcut evaluation for binary value used by internal incremental machinery.
      */
     @Override
     public double evaluateSubfunction(int sf, int value) {
@@ -85,7 +87,8 @@ public class TestingCoverage extends EmbeddedLandscape {
      * Loads objective configuration from properties.
      *
      * <p>
-     * {@code coverage} supports two row formats:</p>
+     * {@code coverage} supports two row formats:
+     * </p>
      * <ul>
      * <li>Binary row with {@code tests} columns, e.g. {@code 0 1 0 1}.</li>
      * <li>Sparse row with covered test indexes, e.g. {@code 1,3}.</li>
@@ -106,21 +109,22 @@ public class TestingCoverage extends EmbeddedLandscape {
             throw new RuntimeException("Missing coverage property: " + COVERAGE_PROPERTY);
         }
 
-        String[] rows = coverageDescription.trim().isEmpty()
-                ? new String[0]
+        String[] rows = coverageDescription.trim().isEmpty() ? new String[0]
                 : coverageDescription.trim().split(ROW_SEPARATOR_REGEX);
 
         String requirementsProperty = prop.getProperty(REQUIREMENTS_PROPERTY);
         if (requirementsProperty != null) {
             m = Integer.parseInt(requirementsProperty);
             if (m != rows.length) {
-                throw new IllegalArgumentException("Mismatch between requirements and rows due to Property " + REQUIREMENTS_PROPERTY);
+                throw new IllegalArgumentException(
+                        "Mismatch between requirements and rows due to Property " + REQUIREMENTS_PROPERTY);
             }
         } else {
             m = rows.length;
         }
 
-        // one subfunction per requirement. Each mask contains test indexes that cover that requirement.
+        // one subfunction per requirement. Each mask contains test indexes that cover
+        // that requirement.
         masks = new int[m][];
 
         for (int requirements = 0; requirements < m; requirements++) {
@@ -200,8 +204,9 @@ public class TestingCoverage extends EmbeddedLandscape {
 
             int test = Integer.parseInt(token);
             if (test < 0 || test >= numberOfTests) {
-                throw new IllegalArgumentException("Invalid test: " + test + " for requirement: " + requirement + ". The index must be in [0, "
-                        + (numberOfTests - 1) + "]");
+                throw new IllegalArgumentException(
+                        "Invalid test: " + test + " for requirement: " + requirement + ". The index must be in [0, "
+                                + (numberOfTests - 1) + "]");
             }
 
             if (!alreadyAdded[test]) {
