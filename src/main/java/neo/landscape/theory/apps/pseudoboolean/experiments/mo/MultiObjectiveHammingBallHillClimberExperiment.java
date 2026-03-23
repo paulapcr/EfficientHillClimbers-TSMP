@@ -144,6 +144,8 @@ public class MultiObjectiveHammingBallHillClimberExperiment implements Process {
             return;
         }
 
+        int[][] vig;
+
         try {
 
             CommandLine commandLine = parseCommandLine(args);
@@ -162,6 +164,32 @@ public class MultiObjectiveHammingBallHillClimberExperiment implements Process {
 
             System.out.println("Variables: " + pbf.getN());
             System.out.println("Subfunctions: " + pbf.getM());
+
+            // VIG ANALYSIS --------------------------------
+            System.out.println("----- VIG ANALYSIS -----");
+
+            int max = 0;
+            int min = Integer.MAX_VALUE;
+            int sum = 0;
+
+            for (int i = 0; i < pbf.getN(); i++) {
+
+                int size = pbf.getAppearsIn()[i].length;
+
+                max = Math.max(max, size);
+                min = Math.min(min, size);
+                sum += size;
+            }
+
+            double avg = sum / (double) pbf.getN();
+
+            System.out.println("Min appearsIn: " + min);
+            System.out.println("Max appearsIn: " + max);
+            System.out.println("Avg appearsIn: " + avg);
+
+            System.out.println("------------------------");
+
+            // END VIG ANALYSIS --------------------------------
 
             int r = Integer.parseInt(commandLine.getOptionValue(RADIUS_ARGUMENT));
             int time = Integer.parseInt(commandLine.getOptionValue(TIME_ARGUMENT));
@@ -205,6 +233,7 @@ public class MultiObjectiveHammingBallHillClimberExperiment implements Process {
             ps.println("Stored scores:" + rballfio.getStoredScores());
             ps.println("Total time (ms):" + timer.elapsedTimeInMilliseconds());
             ps.println("Average time per move (nanoseconds):" + timer.elapsedTime() / (double) totalMoves);
+
             ps.println(nonDominatedSet.printArchive());
 
             printOutput();
@@ -325,7 +354,6 @@ public class MultiObjectiveHammingBallHillClimberExperiment implements Process {
         double[] quality = rball.getSolutionQuality();
 
         System.out.println("----- FINAL SOLUTION -----");
-        System.out.println("Selected tests: " + selectedTests);
 
         System.out.println("Coverage: " + quality[0]);
         System.out.println("Cost: " + (-quality[1]));
